@@ -4,51 +4,79 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>הטאבון</title>
+
 <style>
 body{margin:0;font-family:Arial;background:#f4f4f4}
 header{background:#111;color:white;text-align:center;padding:14px;font-size:20px}
-.layout{display:flex;height:100vh}
+
+.topCart{position:sticky;top:0;z-index:50;background:white;border-bottom:1px solid #ddd;padding:10px;display:flex;gap:10px;justify-content:center;align-items:center;font-size:20px;font-weight:bold}
+.topCart button{background:#159947;color:white;border:0;border-radius:8px;padding:10px 20px;font-size:18px;cursor:pointer}
+
+.layout{display:flex;height:calc(100vh - 58px)}
 .side{width:220px;background:#e9e9e9;padding:10px;overflow:auto}
 .side button{width:100%;padding:12px;margin-bottom:8px;border:1px solid #ccc;background:white;cursor:pointer;font-weight:bold}
+
 .main{flex:1;padding:20px;overflow:auto}
 .grid{display:flex;flex-wrap:wrap;gap:12px}
+
 .box{width:170px;background:white;border:1px solid #ccc;border-radius:6px;text-align:center;padding:10px;cursor:pointer}
 .box:hover{background:#f9f9f9}
+
 .cat{font-weight:bold}
 .price{margin-top:5px}
+
 .panel{background:white;padding:20px;border-radius:8px;border:1px solid #ddd;max-width:980px}
+
 .extraRow{display:grid;grid-template-columns:130px 1fr 150px;align-items:center;border:1px solid #ddd;margin-bottom:8px;padding:8px;background:#fafafa}
 .extraName{font-weight:bold}
+
 .circle{width:82px;height:82px;border-radius:50%;overflow:hidden;display:grid;border:1px solid #aaa;background:white}
 .q{border:1px solid #eee;cursor:pointer}
 .q.on{background:#d71920}
+
 .checkBox{width:35px;height:35px;border:2px solid #aaa;cursor:pointer}
 .checkBox.on{background:#d71920}
+
 .qtyBox{display:flex;align-items:center;justify-content:center;gap:8px}
 .qtyBtn{width:32px;height:32px;border:0;border-radius:50%;background:#111;color:white;font-size:20px;cursor:pointer}
 .qtyNum{min-width:28px;text-align:center;font-weight:bold;font-size:18px}
+
 .selected{outline:3px solid green}
+
 .backBtn{margin-bottom:10px;padding:8px 14px;cursor:pointer}
 .freeText{font-weight:bold;color:green;margin:10px 0;font-size:18px}
+
 .addBtn,.payBtn,.confirmBtn{margin-top:15px;padding:12px 25px;background:#159947;color:white;border:0;border-radius:6px;cursor:pointer;font-size:17px}
 .payBtn{width:100%;font-size:22px}
-.optionBtn{padding:14px 24px;margin:8px;border:1px solid #ccc;background:#fff;border-radius:8px;cursor:pointer;font-size:18px}
+
+.optionBtn{padding:16px 28px;margin:8px;border:1px solid #ccc;background:#fff;border-radius:8px;cursor:pointer;font-size:20px}
 .optionBtn.on{background:#159947;color:white}
+
 .formRow{margin-bottom:12px}
 .formRow label{display:block;font-weight:bold;margin-bottom:5px}
 .formRow input,.formRow textarea{width:100%;box-sizing:border-box;padding:12px;font-size:17px;border:1px solid #ccc;border-radius:6px}
+
 .cart{margin-top:20px;background:white;border:1px solid #ccc;padding:12px;border-radius:8px}
 .cartTitle{margin:0 0 10px 0;font-size:24px}
 .cartTotal{font-size:20px;font-weight:bold;color:#159947;margin-top:10px}
 .cartLine{border-bottom:1px solid #ddd;padding:8px}
 .deleteBtn{background:#d71920;color:white;border:0;border-radius:5px;padding:5px 10px;cursor:pointer;margin-top:6px}
+
 .loading{position:fixed;inset:0;background:rgba(255,255,255,.75);display:none;align-items:center;justify-content:center;z-index:9999;font-size:22px;font-weight:bold}
 .spinner{width:45px;height:45px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin 1s linear infinite;margin-left:12px}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+.msgOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000;padding:18px}
+.msgBox{background:white;border-radius:18px;box-shadow:0 12px 40px rgba(0,0,0,.25);max-width:420px;width:100%;padding:24px;text-align:center;border:1px solid #ddd}
+.msgText{font-size:22px;font-weight:bold;line-height:1.5;margin-bottom:18px;color:#111}
+.msgBtn{background:#9b4d36;color:white;border:0;border-radius:999px;padding:12px 28px;font-size:18px;cursor:pointer}
+
+.hidden{display:none!important}
+
 @media (max-width:700px){
   body{font-size:18px}
   header{font-size:24px;padding:18px}
+  .topCart{font-size:18px;flex-direction:column}
   .layout{flex-direction:column;height:auto}
   .side{width:auto;display:flex;overflow-x:auto;gap:10px;padding:10px}
   .side button{width:auto;min-width:150px;font-size:18px;padding:16px;margin-bottom:0}
@@ -71,12 +99,6 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
   .deleteBtn{font-size:18px;padding:10px 16px}
   .backBtn{font-size:20px;padding:12px 18px}
 }
-
-@media (min-width:701px) and (max-width:1100px){
-  .side{width:180px}
-  .box{width:150px;font-size:16px}
-  .extraRow{grid-template-columns:110px 1fr 130px}
-}
 </style>
 </head>
 
@@ -84,16 +106,30 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 
 <div class="loading" id="loading"><div class="spinner"></div>טוען...</div>
 
+<div class="msgOverlay" id="msgOverlay">
+  <div class="msgBox">
+    <div class="msgText" id="msgText"></div>
+    <button class="msgBtn" onclick="closeMessage()">אישור</button>
+  </div>
+</div>
+
+
 <header>🍕 הטאבון</header>
+
+<div class="topCart" id="topCart">
+  <span id="topCartTotal">סה"כ: ₪0</span>
+  <button onclick="openCheckout()">מעבר לתשלום</button>
+</div>
 
 <div class="layout">
   <div class="side" id="cats"></div>
+
   <div class="main">
-    <button class="backBtn" onclick="goBack()">⬅ חזור</button>
+    <button class="backBtn" id="backBtn" onclick="goBack()">⬅ חזור</button>
     <h2 id="title">בחר קטגוריה</h2>
     <div id="items" class="grid"></div>
 
-    <div class="cart">
+    <div class="cart" id="cartBox">
       <h2 class="cartTitle">סל:</h2>
       <div id="cartItems">ריק</div>
       <div id="cartTotal" class="cartTotal">סה"כ: ₪0</div>
@@ -103,9 +139,9 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 </div>
 
 <script>
-const API_BASE = window.location.origin;
-const API = API_BASE + "/api/menu";
-const ORDER_API = API_BASE + "/api/order";
+const SERVER = window.location.origin;
+const API = SERVER + "/api/menu";
+const ORDER_API = SERVER + "/api/order";
 
 let data = {};
 let currentCategory = null;
@@ -115,31 +151,45 @@ let currentItem = null;
 let cart = [];
 let checkoutType = "";
 let paymentMethod = "";
+let tempExtras = [];
+let tempCombos = [];
+let savedCheckout = {};
+let currentScreen = "menu";
 
 function showLoading(){document.getElementById("loading").style.display="flex";}
 function hideLoading(){document.getElementById("loading").style.display="none";}
+function showMessage(text){
+  document.getElementById("msgText").innerText = text;
+  document.getElementById("msgOverlay").style.display = "flex";
+}
+function closeMessage(){
+  document.getElementById("msgOverlay").style.display = "none";
+}
+function showCartAreas(){document.getElementById("cartBox").classList.remove("hidden");document.getElementById("topCart").classList.remove("hidden");}
+function hideCartAreas(){document.getElementById("cartBox").classList.add("hidden");document.getElementById("topCart").classList.add("hidden");}
 
 async function start(){
+  currentScreen = "menu";
+  showCartAreas();
   showLoading();
+
   try{
     const res = await fetch(API);
     data = await res.json();
 
-    if(!data.ok){
-      throw new Error(data.error || "שגיאה בטעינת התפריט");
-    }
-
     data.categories = data.categories || [];
     data.items = data.items || [];
     data.extras = data.extras || [];
-    data.itemExtraLinq = data.itemExtraLinq || data.itemExtraLinks || [];
+    data.itemExtraLinq = data.itemExtraLinq || [];
 
     renderCategories();
   }catch(err){
     document.getElementById("items").innerHTML = "שגיאה בטעינת התפריט";
     console.error(err);
   }
+
   hideLoading();
+  renderCart();
 }
 
 function renderCategories(){
@@ -157,7 +207,10 @@ function renderCategories(){
 }
 
 function openCategory(id, name){
+  currentScreen = "menu";
+  showCartAreas();
   showLoading();
+
   setTimeout(()=>{
     currentCategory = id;
     parentId = -1;
@@ -168,7 +221,11 @@ function openCategory(id, name){
 }
 
 function openLevel(title){
+  currentScreen = "menu";
+  showCartAreas();
+
   document.getElementById("title").innerText = title;
+
   const grid = document.getElementById("items");
   grid.className = "grid";
   grid.innerHTML = "";
@@ -182,6 +239,7 @@ function openLevel(title){
   list.forEach(item => {
     const box = document.createElement("div");
     box.className = "box";
+
     const isCat = Number(item.IsCategory) === -1;
 
     if(isCat){
@@ -206,13 +264,20 @@ function openLevel(title){
 
 function openProduct(item, title){
   showLoading();
+
   setTimeout(()=>{
     const hasRegularExtras = Number(item.ItemExtra) === -1;
-    const hasPizzaParts = Number(item.SliceNo) > 1;
+    const hasPizzaParts = getSliceCount(item) > 1;
     const hasCombos = getCombos(item, 0).length > 0;
 
-    if(hasRegularExtras || hasPizzaParts || hasCombos){
-      openConfigScreen(item, title);
+    if(hasRegularExtras || hasPizzaParts){
+      openExtrasStep(item, title);
+    }else if(hasCombos){
+      currentItem = item;
+      tempExtras = [];
+      tempCombos = [];
+      stack.push({type:"product", parentId, title});
+      openCombosStep();
     }else{
       addItemToCart(item, []);
     }
@@ -221,11 +286,15 @@ function openProduct(item, title){
   },80);
 }
 
-function openConfigScreen(item, title){
+function openExtrasStep(item, title){
+  currentScreen = "extras";
   currentItem = item;
+  tempExtras = [];
+  tempCombos = [];
+
   stack.push({type:"product", parentId, title});
 
-  document.getElementById("title").innerText = item.ItemDesc;
+  document.getElementById("title").innerText = item.ItemDesc + " - תוספות";
 
   const c = document.getElementById("items");
   c.className = "";
@@ -241,24 +310,60 @@ function openConfigScreen(item, title){
     <h3>תוספות</h3>
     <div id="extras"></div>
 
-    <h3>שילובים / המשך בחירה</h3>
-    <div id="combos"></div>
-
-    <button class="addBtn" onclick="addConfiguredToCart()">הוסף לסל</button>
+    <button class="addBtn" onclick="confirmExtrasStep()">אישור תוספות והמשך</button>
   `;
 
   c.appendChild(wrap);
 
   renderExtras(item);
-  renderCombos(item);
   updatePrices();
+}
+
+function confirmExtrasStep(){
+  tempExtras = collectSelectedRows();
+
+  if(getCombos(currentItem, 0).length > 0){
+    openCombosStep();
+  }else{
+    addItemToCart(currentItem, tempExtras);
+    goBack();
+  }
+}
+
+function openCombosStep(){
+  currentScreen = "combos";
+  document.getElementById("title").innerText = currentItem.ItemDesc + " - שילובים";
+
+  const c = document.getElementById("items");
+  c.className = "";
+  c.innerHTML = "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "panel";
+  wrap.innerHTML = `
+    <h2>${currentItem.ItemDesc}</h2>
+    <h3>שילובים / המשך בחירה</h3>
+    <div id="combos"></div>
+    <button class="addBtn" onclick="confirmCombosAndAdd()">הוסף לסל</button>
+  `;
+
+  c.appendChild(wrap);
+
+  renderCombos(currentItem);
+  updatePrices();
+}
+
+function confirmCombosAndAdd(){
+  tempCombos = collectSelectedRows();
+  addItemToCart(currentItem, [...tempExtras, ...tempCombos]);
+  goBack();
 }
 
 function renderExtras(item){
   const box = document.getElementById("extras");
   box.innerHTML = "";
 
-  if(Number(item.ItemExtra) !== -1 && Number(item.SliceNo) <= 1){
+  if(Number(item.ItemExtra) !== -1 && getSliceCount(item) <= 1){
     box.innerHTML = "אין תוספות למוצר הזה";
     return;
   }
@@ -302,6 +407,17 @@ function getCombos(item, step){
     .filter(e => Number(e.NotActive) === 0);
 }
 
+function getSliceCount(item){
+  const name = String(item.ItemDesc || "");
+
+  if(name.includes("מדיום")){
+    return 2;
+  }
+
+  const n = Number(item.SliceNo) || 1;
+  return n;
+}
+
 function getComboPaidPrice(extraDesc, extraNo){
   const itemByNo = data.items.find(i =>
     Number(i.ItemNo) === Number(extraNo) &&
@@ -339,7 +455,7 @@ function createOptionRow(ex, item, type){
   row.dataset.qty = 0;
 
   const selector = document.createElement("div");
-  const sliceCount = Number(item.SliceNo) || 1;
+  const sliceCount = getSliceCount(item);
 
   if(type === "combo"){
     selector.className = "qtyBox";
@@ -371,13 +487,16 @@ function createOptionRow(ex, item, type){
     selector.className = "circle";
 
     const cols =
+      sliceCount === 2 ? 2 :
       sliceCount === 8 ? 4 :
       sliceCount === 6 ? 3 :
       sliceCount === 4 ? 2 :
       2;
 
     selector.style.gridTemplateColumns = `repeat(${cols},1fr)`;
-    selector.style.gridTemplateRows = `repeat(${Math.ceil(sliceCount / cols)},1fr)`;
+    selector.style.gridTemplateRows = sliceCount === 2
+      ? `repeat(1,1fr)`
+      : `repeat(${Math.ceil(sliceCount / cols)},1fr)`;
 
     for(let i=0;i<sliceCount;i++){
       const q = document.createElement("div");
@@ -390,6 +509,7 @@ function createOptionRow(ex, item, type){
       };
       selector.appendChild(q);
     }
+
   }else{
     selector.className = "checkBox";
     selector.dataset.part = 1;
@@ -421,7 +541,7 @@ function getSelectedParts(row){
 
 function updatePrices(){
   const rows = [...document.querySelectorAll(".extraRow")];
-  const sliceCount = Number(currentItem?.SliceNo || 1);
+  const sliceCount = getSliceCount(currentItem || {});
   const freePartsTotal = Number(currentItem?.FreeExtra || 0) * sliceCount;
 
   let freeUsed = 0;
@@ -434,8 +554,8 @@ function updatePrices(){
 
     if(type === "combo"){
       const qty = Number(row.dataset.qty || 0);
-
       let freeQty = 0;
+
       if(qty > 0 && comboFreeUsed === false){
         freeQty = 1;
         comboFreeUsed = true;
@@ -495,19 +615,17 @@ function updatePrices(){
   const freeText = document.getElementById("freeText");
 
   if(freeText){
-    if(freePartsTotal > 0 && freeUsed < freePartsTotal){
-      freeText.innerText = "תוספת חינם";
-    }else{
-      freeText.innerText = "";
-    }
+    freeText.innerText = freePartsTotal > 0 && freeUsed < freePartsTotal
+      ? "תוספת חינם"
+      : "";
   }
 }
 
-function addConfiguredToCart(){
-  const selected = [...document.querySelectorAll(".extraRow")]
+function collectSelectedRows(){
+  return [...document.querySelectorAll(".extraRow")]
     .map(row => {
       const type = row.dataset.type;
-      const sliceCount = Number(currentItem?.SliceNo || 1);
+      const sliceCount = getSliceCount(currentItem || {});
 
       if(type === "combo"){
         const qty = Number(row.dataset.qty || 0);
@@ -524,7 +642,13 @@ function addConfiguredToCart(){
           freeUsed: Number(row.dataset.freeUsed || 0),
           paidParts: Number(row.dataset.paidParts || 0),
           sum: Number(row.dataset.sum || 0),
-          full:0,rh:0,lh:0,q14:0,q24:0,q34:0,q44:0
+          full:0,
+          rh:0,
+          lh:0,
+          q14:0,
+          q24:0,
+          q34:0,
+          q44:0
         };
       }
 
@@ -544,10 +668,9 @@ function addConfiguredToCart(){
         freeUsed: Number(row.dataset.freeUsed || 0),
         paidParts: Number(row.dataset.paidParts || 0),
         sum: Number(row.dataset.sum || 0),
-
         full: isPizzaExtra && parts.length === sliceCount ? -1 : 0,
-        rh: 0,
-        lh: 0,
+        rh: parts.includes(1) ? -1 : 0,
+        lh: parts.includes(2) ? -1 : 0,
         q14: parts.includes(1) ? -1 : 0,
         q24: parts.includes(2) ? -1 : 0,
         q34: parts.includes(3) ? -1 : 0,
@@ -555,12 +678,10 @@ function addConfiguredToCart(){
       };
     })
     .filter(Boolean);
-
-  addItemToCart(currentItem, selected);
-  goBack();
 }
 
 function addItemToCart(item, extras){
+  currentScreen = "menu";
   const extrasTotal = extras.reduce((s,e)=>s+Number(e.sum||0),0);
   const base = Number(item.ItemPrice || 0);
 
@@ -571,7 +692,7 @@ function addItemToCart(item, extras){
     itemPrice:base,
     extraReduse:item.ExtraReduse || 0,
     qty:1,
-    sliceNo:item.SliceNo || 1,
+    sliceNo:getSliceCount(item),
     itemDescLong:item.ItemDescLong || "",
     freeExtra:item.FreeExtra || 0,
     freeExtraFrom:item.FreeExtraFrom || 0,
@@ -589,13 +710,19 @@ function removeCartItem(index){
   renderCart();
 }
 
+function getCartTotal(){
+  return cart.reduce((s,i)=>s+Number(i.total||0),0);
+}
+
 function renderCart(){
   const el = document.getElementById("cartItems");
   const totalEl = document.getElementById("cartTotal");
+  const topTotal = document.getElementById("topCartTotal");
 
   if(cart.length === 0){
     el.innerHTML = "ריק";
     totalEl.innerText = "סה\"כ: ₪0";
+    topTotal.innerText = "סה\"כ: ₪0";
     return;
   }
 
@@ -622,72 +749,60 @@ function renderCart(){
     `;
   }).join("");
 
-  const total = cart.reduce((s,i)=>s+Number(i.total||0),0);
-  totalEl.innerText = `סה"כ: ₪${cleanMoney(total)}`;
-}
-
-function getCartTotal(){
-  return cart.reduce((s,i)=>s+Number(i.total||0),0);
+  const totalText = `סה"כ: ₪${cleanMoney(getCartTotal())}`;
+  totalEl.innerText = totalText;
+  topTotal.innerText = totalText;
 }
 
 function openCheckout(){
-  if(cart.length === 0){
-    alert("הסל ריק");
+  if(currentScreen === "extras" || currentScreen === "combos"){
+    showMessage("עדיין לא הוספת את המוצר לסל");
     return;
   }
 
+  if(cart.length === 0){
+    showMessage("הסל ריק");
+    return;
+  }
+
+  currentScreen = "checkout_type";
+  hideCartAreas();
+
+  checkoutType = "";
   paymentMethod = "";
+  savedCheckout = {};
+
   document.getElementById("title").innerText = "מעבר לתשלום";
-  const c = document.getElementById("items");
-  c.className = "";
-  c.innerHTML = `
+  document.getElementById("items").className = "";
+  document.getElementById("items").innerHTML = `
     <div class="panel">
       <h2>איך תרצה לקבל את ההזמנה?</h2>
-
       <button class="optionBtn" onclick="selectCheckoutType('pickup')">איסוף עצמי</button>
       <button class="optionBtn" onclick="selectCheckoutType('delivery')">משלוח</button>
-
-      <div id="checkoutForm"></div>
     </div>
   `;
 }
 
 function selectCheckoutType(type){
+  currentScreen = "checkout_details";
   checkoutType = type;
-  paymentMethod = "";
 
-  const box = document.getElementById("checkoutForm");
+  document.getElementById("title").innerText = type === "pickup"
+    ? "פרטי איסוף עצמי"
+    : "פרטי משלוח";
 
-  if(type === "pickup"){
-    box.innerHTML = `
-      <h3>פרטי לקוח לאיסוף עצמי</h3>
+  const addressFields = type === "delivery"
+    ? `
+      <div class="formRow"><label>עיר</label><input id="city" type="text"></div>
+      <div class="formRow"><label>רחוב</label><input id="street" type="text"></div>
+      <div class="formRow"><label>מספר בית</label><input id="houseNumber" type="text"></div>
+      <div class="formRow"><label>מספר דירה</label><input id="apartment" type="text"></div>
+    `
+    : "";
 
-      <div class="formRow">
-        <label>שם</label>
-        <input id="clientName" type="text">
-      </div>
-
-      <div class="formRow">
-        <label>מספר טלפון</label>
-        <input id="phone" type="tel">
-      </div>
-
-      <div class="formRow">
-        <label>הערה להזמנה</label>
-        <textarea id="remark"></textarea>
-      </div>
-
-      <h3>אמצעי תשלום</h3>
-      <button class="optionBtn" onclick="selectPayment('cash_counter', this)">מזומן בדלפק</button>
-      <button class="optionBtn" onclick="selectPayment('credit', this)">אשראי</button>
-
-      <button class="confirmBtn" onclick="submitOrder()">אישור ההזמנה</button>
-    `;
-  }
-
-  if(type === "delivery"){
-    box.innerHTML = `
-      <h3>פרטי לקוח למשלוח</h3>
+  document.getElementById("items").innerHTML = `
+    <div class="panel">
+      <h2>${type === "pickup" ? "פרטי לקוח לאיסוף עצמי" : "פרטי לקוח למשלוח"}</h2>
 
       <div class="formRow">
         <label>שם</label>
@@ -699,97 +814,137 @@ function selectCheckoutType(type){
         <input id="phone" type="tel">
       </div>
 
-      <div class="formRow">
-        <label>עיר</label>
-        <input id="city" type="text">
-      </div>
-
-      <div class="formRow">
-        <label>רחוב</label>
-        <input id="street" type="text">
-      </div>
-
-      <div class="formRow">
-        <label>מספר בית</label>
-        <input id="houseNumber" type="text">
-      </div>
-
-      <div class="formRow">
-        <label>מספר דירה</label>
-        <input id="apartment" type="text">
-      </div>
+      ${addressFields}
 
       <div class="formRow">
         <label>הערה להזמנה</label>
         <textarea id="remark"></textarea>
       </div>
 
-      <h3>אמצעי תשלום</h3>
-      <button class="optionBtn" onclick="selectPayment('cash_delivery', this)">מזומן לשליח</button>
-      <button class="optionBtn" onclick="selectPayment('credit', this)">אשראי</button>
+      <button class="confirmBtn" onclick="openPaymentStep()">המשך</button>
+    </div>
+  `;
 
-      <button class="confirmBtn" onclick="submitOrder()">אישור ההזמנה</button>
-    `;
-  }
+  loadLastCustomer();
 }
 
-function selectPayment(method, btn){
-  paymentMethod = method;
-  [...document.querySelectorAll("#checkoutForm .optionBtn")].forEach(b => {
-    if(b.innerText.includes("מזומן") || b.innerText.includes("אשראי")){
-      b.classList.remove("on");
-    }
-  });
-  btn.classList.add("on");
-}
-
-async function submitOrder(){
+function openPaymentStep(){
   const clientName = document.getElementById("clientName")?.value.trim() || "";
   const phone = document.getElementById("phone")?.value.trim() || "";
-  const remark = document.getElementById("remark")?.value.trim() || "";
 
   if(!clientName){
-    alert("נא להזין שם");
+    showMessage("נא להזין שם");
     return;
   }
 
   if(!phone){
-    alert("נא להזין מספר טלפון");
+    showMessage("נא להזין מספר טלפון");
     return;
   }
-
-  if(!paymentMethod){
-    alert("נא לבחור אמצעי תשלום");
-    return;
-  }
-
-  let address = "";
 
   if(checkoutType === "delivery"){
     const city = document.getElementById("city")?.value.trim() || "";
     const street = document.getElementById("street")?.value.trim() || "";
     const houseNumber = document.getElementById("houseNumber")?.value.trim() || "";
-    const apartment = document.getElementById("apartment")?.value.trim() || "";
 
     if(!city || !street || !houseNumber){
-      alert("נא למלא עיר, רחוב ומספר בית");
+      showMessage("נא למלא עיר, רחוב ומספר בית");
       return;
     }
-
-    address = `${city}, ${street} ${houseNumber}${apartment ? ", דירה " + apartment : ""}`;
   }
 
-  const payload = {
+  savedCheckout = {
     clientName,
     phone,
+    remark: document.getElementById("remark")?.value.trim() || "",
+    city: document.getElementById("city")?.value.trim() || "",
+    street: document.getElementById("street")?.value.trim() || "",
+    houseNumber: document.getElementById("houseNumber")?.value.trim() || "",
+    apartment: document.getElementById("apartment")?.value.trim() || ""
+  };
+
+  currentScreen = "checkout_payment";
+  document.getElementById("title").innerText = "אמצעי תשלום";
+  document.getElementById("items").innerHTML = `
+    <div class="panel">
+      <h2>בחר אמצעי תשלום</h2>
+
+      <button class="optionBtn" id="cashPayBtn" onclick="choosePay('cash')">
+        ${checkoutType === "delivery" ? "מזומן אצל השליח" : "מזומן בדלפק"}
+      </button>
+
+      <button class="optionBtn" id="creditPayBtn" onclick="choosePay('credit')">אשראי</button>
+
+      <div id="paymentMethodText" class="freeText"></div>
+
+      <button class="confirmBtn" onclick="submitOrder()">אישור</button>
+    </div>
+  `;
+}
+
+function choosePay(method){
+  const cashBtn = document.getElementById("cashPayBtn");
+  const creditBtn = document.getElementById("creditPayBtn");
+
+  if(cashBtn) cashBtn.classList.remove("on");
+  if(creditBtn) creditBtn.classList.remove("on");
+
+  if(method === "credit"){
+    paymentMethod = "credit";
+    if(creditBtn) creditBtn.classList.add("on");
+    document.getElementById("paymentMethodText").innerText = "נבחר: אשראי";
+  }else{
+    paymentMethod = checkoutType === "delivery" ? "cash_delivery" : "cash_counter";
+    if(cashBtn) cashBtn.classList.add("on");
+    document.getElementById("paymentMethodText").innerText = "נבחר: מזומן";
+  }
+}
+
+function loadLastCustomer(){
+  const lastPhone = localStorage.getItem("hataboon_last_phone") || "";
+  const lastName = localStorage.getItem("hataboon_last_name") || "";
+
+  const phoneEl = document.getElementById("phone");
+  const nameEl = document.getElementById("clientName");
+
+  if(phoneEl && !phoneEl.value) phoneEl.value = lastPhone;
+  if(nameEl && !nameEl.value) nameEl.value = lastName;
+}
+
+function saveCustomerMemory(name, phone){
+  const cleanPhone = normalizePhone(phone);
+
+  if(name) localStorage.setItem("hataboon_last_name", name);
+  if(cleanPhone) localStorage.setItem("hataboon_last_phone", cleanPhone);
+}
+
+async function submitOrder(){
+  if(!paymentMethod){
+    showMessage("נא לבחור אמצעי תשלום");
+    return;
+  }
+
+  const s = savedCheckout || {};
+
+  saveCustomerMemory(s.clientName, s.phone);
+
+  const address = checkoutType === "delivery"
+    ? `${s.city}, ${s.street} ${s.houseNumber}${s.apartment ? ", דירה " + s.apartment : ""}`
+    : "";
+
+  const isCredit = paymentMethod === "credit";
+
+  const payload = {
+    clientName: s.clientName,
+    phone: normalizePhone(s.phone),
     address,
     area: checkoutType === "delivery" ? "משלוח" : "איסוף עצמי",
-    remark,
+    remark: s.remark,
     items: cart,
     total: getCartTotal(),
     paymentMethod,
-    paymentMethodText: getPaymentText(paymentMethod),
-    orderStatus: paymentMethod === "credit" ? "pending" : "approved",
+    paymentMethodText: getPaymentMethodText(paymentMethod),
+    orderStatus: isCredit ? "pending" : "approved",
     paymentSource: "new_order_system"
   };
 
@@ -802,35 +957,54 @@ async function submitOrder(){
       body: JSON.stringify(payload)
     });
 
-    const result = await res.json();
+    const raw = await res.text();
 
-    hideLoading();
+    let result;
+    try{
+      result = JSON.parse(raw);
+    }catch(parseErr){
+      throw new Error("השרת החזיר תשובה לא תקינה: " + raw.slice(0, 250));
+    }
 
-    if(result.ok){
-      if(paymentMethod === "credit" && result.paymentUrl){
-        window.location.href = result.paymentUrl;
-        return;
+    if(!res.ok || !result.ok){
+      throw new Error(result.error || result.details || "שגיאה לא ידועה מהשרת");
+    }
+
+    if(isCredit){
+      const paymentUrl = result.paymentUrl || result.url || result.sessionUrl;
+
+      if(!paymentUrl){
+        throw new Error("לא התקבל קישור סליקה מהשרת");
       }
 
-      showOrderSuccess(result.orderNo);
-    }else{
-      alert("שגיאה בשליחת ההזמנה: " + (result.error || ""));
+      window.location.href = paymentUrl;
+      return;
     }
+
+    hideLoading();
+    showOrderSuccess(result.orderNo || result.orderId || "");
   }catch(err){
     hideLoading();
-    console.error(err);
-    alert("שגיאה בשליחת ההזמנה: " + err.message);
+    console.error("submitOrder error:", err);
+    showMessage("שגיאה בשליחת ההזמנה: " + err.message);
   }
 }
 
-function getPaymentText(method){
+function getPaymentMethodText(method){
   if(method === "cash_counter") return "מזומן בדלפק";
-  if(method === "cash_delivery") return "מזומן לשליח";
+  if(method === "cash_delivery") return "מזומן אצל השליח";
   if(method === "credit") return "אשראי";
   return "";
 }
 
+function normalizePhone(phone){
+  return String(phone || "").replace(/[^\d]/g,"");
+}
+
 function showOrderSuccess(orderNo){
+  currentScreen = "success";
+  hideCartAreas();
+
   document.getElementById("title").innerText = "ההזמנה נשלחה";
   document.getElementById("items").className = "";
   document.getElementById("items").innerHTML = `
@@ -843,11 +1017,22 @@ function showOrderSuccess(orderNo){
 }
 
 function resetAfterOrder(){
+  currentScreen = "menu";
   cart = [];
   renderCart();
+
   currentCategory = null;
   parentId = -1;
   stack = [];
+  currentItem = null;
+  tempExtras = [];
+  tempCombos = [];
+  checkoutType = "";
+  paymentMethod = "";
+  savedCheckout = {};
+
+  showCartAreas();
+
   document.getElementById("title").innerText = "בחר קטגוריה";
   document.getElementById("items").className = "grid";
   document.getElementById("items").innerHTML = "";
@@ -859,6 +1044,9 @@ function cleanMoney(n){
 }
 
 function goBack(){
+  currentScreen = "menu";
+  showCartAreas();
+
   if(stack.length === 0){
     parentId = -1;
     document.getElementById("title").innerText = "בחר קטגוריה";
