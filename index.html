@@ -3,97 +3,126 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>הטאבון 🍕</title>
-
+<title>הטאבון</title>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:#f4f4f4;color:#111}
-header{background:#111;color:#fff;text-align:center;padding:18px;font-size:26px;font-weight:bold;position:sticky;top:0;z-index:100}
+body{margin:0;font-family:Arial;background:#f4f4f4}
+header{background:#111;color:white;text-align:center;padding:14px;font-size:20px}
+.layout{display:flex;height:100vh}
+.side{width:220px;background:#e9e9e9;padding:10px;overflow:auto}
+.side button{width:100%;padding:12px;margin-bottom:8px;border:1px solid #ccc;background:white;cursor:pointer;font-weight:bold}
+.main{flex:1;padding:20px;overflow:auto}
+.grid{display:flex;flex-wrap:wrap;gap:12px}
+.box{width:170px;background:white;border:1px solid #ccc;border-radius:6px;text-align:center;padding:10px;cursor:pointer}
+.box:hover{background:#f9f9f9}
+.cat{font-weight:bold}
+.price{margin-top:5px}
+.panel{background:white;padding:20px;border-radius:8px;border:1px solid #ddd;max-width:980px}
+.extraRow{display:grid;grid-template-columns:130px 1fr 150px;align-items:center;border:1px solid #ddd;margin-bottom:8px;padding:8px;background:#fafafa}
+.extraName{font-weight:bold}
+.circle{width:82px;height:82px;border-radius:50%;overflow:hidden;display:grid;border:1px solid #aaa;background:white}
+.q{border:1px solid #eee;cursor:pointer}
+.q.on{background:#d71920}
+.checkBox{width:35px;height:35px;border:2px solid #aaa;cursor:pointer}
+.checkBox.on{background:#d71920}
+.qtyBox{display:flex;align-items:center;justify-content:center;gap:8px}
+.qtyBtn{width:32px;height:32px;border:0;border-radius:50%;background:#111;color:white;font-size:20px;cursor:pointer}
+.qtyNum{min-width:28px;text-align:center;font-weight:bold;font-size:18px}
+.selected{outline:3px solid green}
+.backBtn{margin-bottom:10px;padding:8px 14px;cursor:pointer}
+.freeText{font-weight:bold;color:green;margin:10px 0;font-size:18px}
+.addBtn,.payBtn,.confirmBtn{margin-top:15px;padding:12px 25px;background:#159947;color:white;border:0;border-radius:6px;cursor:pointer;font-size:17px}
+.payBtn{width:100%;font-size:22px}
+.optionBtn{padding:14px 24px;margin:8px;border:1px solid #ccc;background:#fff;border-radius:8px;cursor:pointer;font-size:18px}
+.optionBtn.on{background:#159947;color:white}
+.formRow{margin-bottom:12px}
+.formRow label{display:block;font-weight:bold;margin-bottom:5px}
+.formRow input,.formRow textarea{width:100%;box-sizing:border-box;padding:12px;font-size:17px;border:1px solid #ccc;border-radius:6px}
+.cart{margin-top:20px;background:white;border:1px solid #ccc;padding:12px;border-radius:8px}
+.cartTitle{margin:0 0 10px 0;font-size:24px}
+.cartTotal{font-size:20px;font-weight:bold;color:#159947;margin-top:10px}
+.cartLine{border-bottom:1px solid #ddd;padding:8px}
+.deleteBtn{background:#d71920;color:white;border:0;border-radius:5px;padding:5px 10px;cursor:pointer;margin-top:6px}
+.loading{position:fixed;inset:0;background:rgba(255,255,255,.75);display:none;align-items:center;justify-content:center;z-index:9999;font-size:22px;font-weight:bold}
+.spinner{width:45px;height:45px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin 1s linear infinite;margin-left:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
-.topBar{background:white;padding:12px;display:flex;gap:10px;align-items:center;justify-content:center;border-bottom:1px solid #ddd;position:sticky;top:65px;z-index:90}
-.total{font-size:22px;font-weight:bold;color:#159947}
-.checkoutBtn{background:#159947;color:white;border:0;border-radius:10px;padding:12px 24px;font-size:18px;cursor:pointer}
+@media (max-width:700px){
+  body{font-size:18px}
+  header{font-size:24px;padding:18px}
+  .layout{flex-direction:column;height:auto}
+  .side{width:auto;display:flex;overflow-x:auto;gap:10px;padding:10px}
+  .side button{width:auto;min-width:150px;font-size:18px;padding:16px;margin-bottom:0}
+  .main{padding:12px}
+  #title{font-size:30px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .box{width:auto;min-height:100px;font-size:20px;padding:16px 10px}
+  .panel{padding:14px;max-width:none}
+  .panel h2{font-size:30px}
+  .panel h3{font-size:24px}
+  .extraRow{grid-template-columns:90px 1fr 120px;font-size:18px;padding:12px}
+  .circle{width:76px;height:76px}
+  .checkBox{width:44px;height:44px}
+  .qtyBtn{width:42px;height:42px;font-size:24px}
+  .qtyNum{font-size:22px}
+  .addBtn,.confirmBtn{width:100%;font-size:24px;padding:18px}
+  .cart{font-size:20px}
+  .cartTitle{font-size:30px}
+  .cartTotal{font-size:26px}
+  .deleteBtn{font-size:18px;padding:10px 16px}
+  .backBtn{font-size:20px;padding:12px 18px}
+}
 
-.wrapper{display:flex;min-height:calc(100vh - 130px)}
-.sidebar{width:230px;background:#e9e9e9;padding:12px;overflow:auto}
-.sidebar button{width:100%;background:white;border:1px solid #ccc;border-radius:10px;padding:14px;margin-bottom:10px;font-size:18px;font-weight:bold;cursor:pointer}
-.sidebar button.active{background:#159947;color:white}
-
-.main{flex:1;padding:20px}
-.title{font-size:30px;margin:0 0 20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
-
-.card{background:white;border-radius:16px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:10px}
-.card h3{margin:0;font-size:22px}
-.price{font-size:20px;color:#159947;font-weight:bold}
-.addBtn{background:#159947;color:white;border:0;border-radius:10px;padding:12px;font-size:18px;cursor:pointer;margin-top:auto}
-
-.cart{background:white;border-radius:16px;padding:18px;margin-top:25px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-.cart h2{margin-top:0}
-.cartItem{border-bottom:1px solid #eee;padding:10px 0;display:flex;justify-content:space-between;gap:10px}
-.removeBtn{background:#d71920;color:white;border:0;border-radius:8px;padding:6px 12px;cursor:pointer}
-
-.panel{background:white;border-radius:16px;padding:20px;box-shadow:0 2px 8px rgba(0,0,0,.08);max-width:700px}
-.formRow{margin-bottom:14px}
-.formRow label{display:block;font-weight:bold;margin-bottom:6px}
-.formRow input,.formRow textarea,.formRow select{width:100%;padding:13px;font-size:17px;border:1px solid #ccc;border-radius:10px}
-.payOptions{display:flex;gap:10px;flex-wrap:wrap}
-.payOption{flex:1;min-width:160px;padding:16px;background:#fff;border:2px solid #ccc;border-radius:12px;font-size:18px;cursor:pointer}
-.payOption.active{border-color:#159947;background:#e9fff0}
-
-.loading{position:fixed;inset:0;background:rgba(255,255,255,.85);display:none;align-items:center;justify-content:center;z-index:999;font-size:24px;font-weight:bold}
-.hidden{display:none}
-
-@media(max-width:800px){
-  .wrapper{flex-direction:column}
-  .sidebar{width:100%;display:flex;gap:8px;overflow-x:auto}
-  .sidebar button{min-width:150px}
-  .topBar{top:64px;flex-direction:column}
-  .grid{grid-template-columns:1fr}
+@media (min-width:701px) and (max-width:1100px){
+  .side{width:180px}
+  .box{width:150px;font-size:16px}
+  .extraRow{grid-template-columns:110px 1fr 130px}
 }
 </style>
 </head>
 
 <body>
 
-<div class="loading" id="loading">טוען...</div>
+<div class="loading" id="loading"><div class="spinner"></div>טוען...</div>
 
 <header>🍕 הטאבון</header>
 
-<div class="topBar">
-  <div class="total" id="topTotal">סה"כ: ₪0</div>
-  <button class="checkoutBtn" onclick="openCheckout()">מעבר לתשלום</button>
-</div>
+<div class="layout">
+  <div class="side" id="cats"></div>
+  <div class="main">
+    <button class="backBtn" onclick="goBack()">⬅ חזור</button>
+    <h2 id="title">בחר קטגוריה</h2>
+    <div id="items" class="grid"></div>
 
-<div class="wrapper">
-  <aside class="sidebar" id="categories"></aside>
-
-  <main class="main">
-    <h1 class="title" id="pageTitle">בחר קטגוריה</h1>
-    <div id="content" class="grid"></div>
-
-    <div class="cart" id="cartBox">
-      <h2>הסל שלך</h2>
-      <div id="cartItems">הסל ריק</div>
-      <h2 id="cartTotal">סה"כ: ₪0</h2>
+    <div class="cart">
+      <h2 class="cartTitle">סל:</h2>
+      <div id="cartItems">ריק</div>
+      <div id="cartTotal" class="cartTotal">סה"כ: ₪0</div>
+      <button class="payBtn" onclick="openCheckout()">מעבר לתשלום</button>
     </div>
-  </main>
+  </div>
 </div>
 
 <script>
-const BASE_URL = window.location.origin;
+const API_BASE = window.location.origin;
+const API = API_BASE + "/api/menu";
+const ORDER_API = API_BASE + "/api/order";
 
-let data = {categories:[],items:[]};
+let data = {};
+let currentCategory = null;
+let parentId = -1;
+let stack = [];
+let currentItem = null;
 let cart = [];
-let selectedPayment = "";
+let checkoutType = "";
+let paymentMethod = "";
 
-function showLoading(){document.getElementById("loading").style.display="flex"}
-function hideLoading(){document.getElementById("loading").style.display="none"}
+function showLoading(){document.getElementById("loading").style.display="flex";}
+function hideLoading(){document.getElementById("loading").style.display="none";}
 
-async function loadMenu(){
+async function start(){
   showLoading();
   try{
-    const res = await fetch(BASE_URL + "/api/menu");
+    const res = await fetch(API);
     data = await res.json();
 
     if(!data.ok){
@@ -102,115 +131,503 @@ async function loadMenu(){
 
     data.categories = data.categories || [];
     data.items = data.items || [];
+    data.extras = data.extras || [];
+    data.itemExtraLinq = data.itemExtraLinq || data.itemExtraLinks || [];
 
     renderCategories();
-    const first = data.categories.find(c => String(c["אתר/אפליקציה"]).trim() === "כן");
-    if(first) openCategory(first["מספר קטגורייה"], first["שם"]);
   }catch(err){
-    document.getElementById("content").className = "";
-    document.getElementById("content").innerHTML = "<div class='panel'>שגיאה בטעינת התפריט<br>" + err.message + "</div>";
+    document.getElementById("items").innerHTML = "שגיאה בטעינת התפריט";
+    console.error(err);
   }
   hideLoading();
 }
 
 function renderCategories(){
-  const box = document.getElementById("categories");
-  box.innerHTML = "";
+  const c = document.getElementById("cats");
+  c.innerHTML = "";
 
   data.categories
-    .filter(c => String(c["אתר/אפליקציה"]).trim() === "כן")
+    .filter(x => String(x["אתר/אפליקציה"]).trim() === "כן")
     .forEach(cat => {
       const btn = document.createElement("button");
-      btn.textContent = cat["שם"];
-      btn.onclick = () => openCategory(cat["מספר קטגורייה"], cat["שם"], btn);
-      box.appendChild(btn);
+      btn.innerText = cat["שם"];
+      btn.onclick = () => openCategory(cat["מספר קטגורייה"], cat["שם"]);
+      c.appendChild(btn);
     });
 }
 
-function openCategory(catId, name, clickedBtn){
-  document.getElementById("pageTitle").textContent = name;
-  document.getElementById("content").className = "grid";
+function openCategory(id, name){
+  showLoading();
+  setTimeout(()=>{
+    currentCategory = id;
+    parentId = -1;
+    stack = [];
+    openLevel(name);
+    hideLoading();
+  },80);
+}
 
-  document.querySelectorAll(".sidebar button").forEach(b=>b.classList.remove("active"));
-  if(clickedBtn) clickedBtn.classList.add("active");
+function openLevel(title){
+  document.getElementById("title").innerText = title;
+  const grid = document.getElementById("items");
+  grid.className = "grid";
+  grid.innerHTML = "";
 
-  const content = document.getElementById("content");
-  content.innerHTML = "";
-
-  const items = data.items.filter(item =>
-    Number(item.ItemCategory) === Number(catId) &&
-    Number(item.IsActive) === 0 &&
-    Number(item.IsCategory) === 0 &&
-    Number(item.ItemPrice) > 0
+  const list = data.items.filter(i =>
+    Number(i.ItemCategory) === Number(currentCategory) &&
+    Number(i.CategoryId) === Number(parentId) &&
+    Number(i.IsActive) === 0
   );
 
-  if(items.length === 0){
-    content.innerHTML = "<div class='panel'>אין מוצרים בקטגוריה הזו</div>";
+  list.forEach(item => {
+    const box = document.createElement("div");
+    box.className = "box";
+    const isCat = Number(item.IsCategory) === -1;
+
+    if(isCat){
+      box.innerHTML = `<div class="cat">${item.ItemDesc}</div>`;
+      box.onclick = () => {
+        showLoading();
+        setTimeout(()=>{
+          stack.push({type:"level", parentId, title});
+          parentId = item.ItemNo;
+          openLevel(item.ItemDesc);
+          hideLoading();
+        },80);
+      };
+    }else{
+      box.innerHTML = `${item.ItemDesc}<div class="price">₪${cleanMoney(item.ItemPrice)}</div>`;
+      box.onclick = () => openProduct(item, title);
+    }
+
+    grid.appendChild(box);
+  });
+}
+
+function openProduct(item, title){
+  showLoading();
+  setTimeout(()=>{
+    const hasRegularExtras = Number(item.ItemExtra) === -1;
+    const hasPizzaParts = Number(item.SliceNo) > 1;
+    const hasCombos = getCombos(item, 0).length > 0;
+
+    if(hasRegularExtras || hasPizzaParts || hasCombos){
+      openConfigScreen(item, title);
+    }else{
+      addItemToCart(item, []);
+    }
+
+    hideLoading();
+  },80);
+}
+
+function openConfigScreen(item, title){
+  currentItem = item;
+  stack.push({type:"product", parentId, title});
+
+  document.getElementById("title").innerText = item.ItemDesc;
+
+  const c = document.getElementById("items");
+  c.className = "";
+  c.innerHTML = "";
+
+  const wrap = document.createElement("div");
+  wrap.className = "panel";
+  wrap.innerHTML = `
+    <h2>${item.ItemDesc}</h2>
+    <div>מחיר בסיס: ₪${cleanMoney(item.ItemPrice)}</div>
+    <div id="freeText" class="freeText"></div>
+
+    <h3>תוספות</h3>
+    <div id="extras"></div>
+
+    <h3>שילובים / המשך בחירה</h3>
+    <div id="combos"></div>
+
+    <button class="addBtn" onclick="addConfiguredToCart()">הוסף לסל</button>
+  `;
+
+  c.appendChild(wrap);
+
+  renderExtras(item);
+  renderCombos(item);
+  updatePrices();
+}
+
+function renderExtras(item){
+  const box = document.getElementById("extras");
+  box.innerHTML = "";
+
+  if(Number(item.ItemExtra) !== -1 && Number(item.SliceNo) <= 1){
+    box.innerHTML = "אין תוספות למוצר הזה";
     return;
   }
 
-  items.forEach(item => {
-    const card = document.createElement("div");
-    card.className = "card";
+  const extras = data.extras.filter(e =>
+    Number(e.ItemSize) === Number(item.ItemSize) &&
+    Number(e.NotActive) === 0
+  ).sort((a,b)=>Number(a.ExtraGuiOrder||0)-Number(b.ExtraGuiOrder||0));
 
-    const name = item.ItemDesc || "";
-    const price = Number(item.ItemPrice || 0);
+  if(extras.length === 0){
+    box.innerHTML = "אין תוספות למוצר הזה";
+    return;
+  }
 
-    card.innerHTML = `
-      <h3>${escapeHtml(name)}</h3>
-      <div class="price">₪${cleanMoney(price)}</div>
-      <button class="addBtn">הוסף לסל</button>
-    `;
-
-    card.querySelector("button").onclick = () => addToCart(item);
-    content.appendChild(card);
-  });
+  extras.forEach(ex => box.appendChild(createOptionRow(ex, item, "extra")));
 }
 
-function addToCart(item){
+function renderCombos(item){
+  const box = document.getElementById("combos");
+  box.innerHTML = "";
+
+  const combos = getCombos(item, 0);
+
+  if(combos.length === 0){
+    box.innerHTML = "אין שילובים למוצר הזה";
+    return;
+  }
+
+  combos.forEach(ex => box.appendChild(createOptionRow(ex, item, "combo")));
+}
+
+function getCombos(item, step){
+  const links = (data.itemExtraLinq || []).filter(l =>
+    Number(l.ItemNo) === Number(item.ItemNo) &&
+    Number(l.Price || 0) === Number(step)
+  );
+
+  return links
+    .map(l => data.extras.find(e => Number(e.ExtraNo) === Number(l.ExtraNo)))
+    .filter(Boolean)
+    .filter(e => Number(e.NotActive) === 0);
+}
+
+function getComboPaidPrice(extraDesc, extraNo){
+  const itemByNo = data.items.find(i =>
+    Number(i.ItemNo) === Number(extraNo) &&
+    Number(i.IsCategory) === 0 &&
+    Number(i.IsActive) === 0
+  );
+
+  if(itemByNo) return Number(itemByNo.ItemPrice || 0);
+
+  const itemByName = data.items.find(i =>
+    String(i.ItemDesc || "").trim() === String(extraDesc || "").trim() &&
+    Number(i.IsCategory) === 0 &&
+    Number(i.IsActive) === 0
+  );
+
+  if(itemByName) return Number(itemByName.ItemPrice || 0);
+
+  return 0;
+}
+
+function createOptionRow(ex, item, type){
+  const row = document.createElement("div");
+  row.className = "extraRow";
+
+  row.dataset.price = type === "combo"
+    ? getComboPaidPrice(ex.ExtraDesc, ex.ExtraNo)
+    : Number(ex.ExtraPrice || 0);
+
+  row.dataset.free = isFreeExtra(ex) ? "1" : "0";
+  row.dataset.extraNo = ex.ExtraNo;
+  row.dataset.extraDesc = ex.ExtraDesc;
+  row.dataset.extraParve = ex.ExtraParve || 0;
+  row.dataset.type = type;
+  row.dataset.sum = 0;
+  row.dataset.qty = 0;
+
+  const selector = document.createElement("div");
+  const sliceCount = Number(item.SliceNo) || 1;
+
+  if(type === "combo"){
+    selector.className = "qtyBox";
+    selector.innerHTML = `
+      <button class="qtyBtn" type="button">+</button>
+      <span class="qtyNum">0</span>
+      <button class="qtyBtn" type="button">−</button>
+    `;
+
+    const plus = selector.children[0];
+    const num = selector.children[1];
+    const minus = selector.children[2];
+
+    plus.onclick = e => {
+      e.stopPropagation();
+      row.dataset.qty = Number(row.dataset.qty || 0) + 1;
+      num.innerText = row.dataset.qty;
+      updatePrices();
+    };
+
+    minus.onclick = e => {
+      e.stopPropagation();
+      row.dataset.qty = Math.max(0, Number(row.dataset.qty || 0) - 1);
+      num.innerText = row.dataset.qty;
+      updatePrices();
+    };
+
+  }else if(sliceCount > 1){
+    selector.className = "circle";
+
+    const cols =
+      sliceCount === 8 ? 4 :
+      sliceCount === 6 ? 3 :
+      sliceCount === 4 ? 2 :
+      2;
+
+    selector.style.gridTemplateColumns = `repeat(${cols},1fr)`;
+    selector.style.gridTemplateRows = `repeat(${Math.ceil(sliceCount / cols)},1fr)`;
+
+    for(let i=0;i<sliceCount;i++){
+      const q = document.createElement("div");
+      q.className = "q";
+      q.dataset.part = i + 1;
+      q.onclick = e => {
+        e.stopPropagation();
+        q.classList.toggle("on");
+        updatePrices();
+      };
+      selector.appendChild(q);
+    }
+  }else{
+    selector.className = "checkBox";
+    selector.dataset.part = 1;
+    selector.onclick = e => {
+      e.stopPropagation();
+      selector.classList.toggle("on");
+      updatePrices();
+    };
+  }
+
+  row.innerHTML = `
+    <div class="priceBox">₪0</div>
+    <div class="extraName">${ex.ExtraDesc}</div>
+  `;
+
+  row.appendChild(selector);
+  return row;
+}
+
+function isFreeExtra(ex){
+  const v = String(ex.ExtraParve || "").trim();
+  return v !== "" && v !== "0" && v !== "לא";
+}
+
+function getSelectedParts(row){
+  return [...row.querySelectorAll(".q.on,.checkBox.on")]
+    .map(x => Number(x.dataset.part || 1));
+}
+
+function updatePrices(){
+  const rows = [...document.querySelectorAll(".extraRow")];
+  const sliceCount = Number(currentItem?.SliceNo || 1);
+  const freePartsTotal = Number(currentItem?.FreeExtra || 0) * sliceCount;
+
+  let freeUsed = 0;
+  let comboFreeUsed = false;
+
+  rows.forEach(row => {
+    const type = row.dataset.type;
+    const pricePerUnit = Number(row.dataset.price || 0);
+    const priceBox = row.querySelector(".priceBox");
+
+    if(type === "combo"){
+      const qty = Number(row.dataset.qty || 0);
+
+      let freeQty = 0;
+      if(qty > 0 && comboFreeUsed === false){
+        freeQty = 1;
+        comboFreeUsed = true;
+      }
+
+      const paidQty = Math.max(0, qty - freeQty);
+      const sum = paidQty * pricePerUnit;
+
+      row.dataset.sum = sum;
+      row.dataset.freeUsed = freeQty;
+      row.dataset.paidParts = paidQty;
+
+      row.classList.toggle("selected", qty > 0);
+
+      if(qty === 0){
+        priceBox.innerText = "₪0";
+      }else if(sum === 0){
+        priceBox.innerText = "חינם";
+      }else{
+        priceBox.innerText = "₪" + cleanMoney(sum);
+      }
+
+      return;
+    }
+
+    const parts = getSelectedParts(row);
+    const selected = parts.length;
+
+    row.classList.toggle("selected", selected > 0);
+
+    const canBeFree = row.dataset.free === "1";
+    let paidParts = selected;
+    let freeForThis = 0;
+
+    if(canBeFree && freeUsed < freePartsTotal){
+      const freeLeft = freePartsTotal - freeUsed;
+      freeForThis = Math.min(selected, freeLeft);
+      paidParts = selected - freeForThis;
+      freeUsed += freeForThis;
+    }
+
+    const sum = paidParts * pricePerUnit;
+
+    row.dataset.sum = sum;
+    row.dataset.freeUsed = freeForThis;
+    row.dataset.paidParts = paidParts;
+
+    if(selected === 0){
+      priceBox.innerText = "₪0";
+    }else if(sum === 0 && canBeFree){
+      priceBox.innerText = "חינם";
+    }else{
+      priceBox.innerText = "₪" + cleanMoney(sum);
+    }
+  });
+
+  const freeText = document.getElementById("freeText");
+
+  if(freeText){
+    if(freePartsTotal > 0 && freeUsed < freePartsTotal){
+      freeText.innerText = "תוספת חינם";
+    }else{
+      freeText.innerText = "";
+    }
+  }
+}
+
+function addConfiguredToCart(){
+  const selected = [...document.querySelectorAll(".extraRow")]
+    .map(row => {
+      const type = row.dataset.type;
+      const sliceCount = Number(currentItem?.SliceNo || 1);
+
+      if(type === "combo"){
+        const qty = Number(row.dataset.qty || 0);
+        if(qty === 0) return null;
+
+        return {
+          extraNo: row.dataset.extraNo,
+          extraDesc: row.dataset.extraDesc,
+          extraParve: row.dataset.extraParve,
+          extraPrice: Number(row.dataset.price || 0),
+          type,
+          qty,
+          parts:[1],
+          freeUsed: Number(row.dataset.freeUsed || 0),
+          paidParts: Number(row.dataset.paidParts || 0),
+          sum: Number(row.dataset.sum || 0),
+          full:0,rh:0,lh:0,q14:0,q24:0,q34:0,q44:0
+        };
+      }
+
+      const parts = getSelectedParts(row);
+      if(parts.length === 0) return null;
+
+      const isPizzaExtra = sliceCount > 1 && type === "extra";
+
+      return {
+        extraNo: row.dataset.extraNo,
+        extraDesc: row.dataset.extraDesc,
+        extraParve: row.dataset.extraParve,
+        extraPrice: Number(row.dataset.price || 0),
+        type,
+        qty:1,
+        parts,
+        freeUsed: Number(row.dataset.freeUsed || 0),
+        paidParts: Number(row.dataset.paidParts || 0),
+        sum: Number(row.dataset.sum || 0),
+
+        full: isPizzaExtra && parts.length === sliceCount ? -1 : 0,
+        rh: 0,
+        lh: 0,
+        q14: parts.includes(1) ? -1 : 0,
+        q24: parts.includes(2) ? -1 : 0,
+        q34: parts.includes(3) ? -1 : 0,
+        q44: parts.includes(4) ? -1 : 0
+      };
+    })
+    .filter(Boolean);
+
+  addItemToCart(currentItem, selected);
+  goBack();
+}
+
+function addItemToCart(item, extras){
+  const extrasTotal = extras.reduce((s,e)=>s+Number(e.sum||0),0);
+  const base = Number(item.ItemPrice || 0);
+
   cart.push({
     itemNo:item.ItemNo,
     itemDesc:item.ItemDesc,
-    itemPrice:Number(item.ItemPrice || 0),
+    itemCategory:item.ItemCategory,
+    itemPrice:base,
+    extraReduse:item.ExtraReduse || 0,
     qty:1,
-    total:Number(item.ItemPrice || 0),
-    extras:[]
+    sliceNo:item.SliceNo || 1,
+    itemDescLong:item.ItemDescLong || "",
+    freeExtra:item.FreeExtra || 0,
+    freeExtraFrom:item.FreeExtraFrom || 0,
+    itemGroup:item.ItemGroup || "",
+    displayColor:item.DisplayColor || "",
+    extras,
+    total:base + extrasTotal
   });
+
   renderCart();
 }
 
-function removeFromCart(index){
+function removeCartItem(index){
   cart.splice(index,1);
   renderCart();
 }
 
-function getTotal(){
-  return cart.reduce((s,i)=>s+Number(i.total || 0),0);
-}
-
 function renderCart(){
-  const itemsBox = document.getElementById("cartItems");
-  const total = getTotal();
-
-  document.getElementById("topTotal").textContent = "סה\"כ: ₪" + cleanMoney(total);
-  document.getElementById("cartTotal").textContent = "סה\"כ: ₪" + cleanMoney(total);
+  const el = document.getElementById("cartItems");
+  const totalEl = document.getElementById("cartTotal");
 
   if(cart.length === 0){
-    itemsBox.innerHTML = "הסל ריק";
+    el.innerHTML = "ריק";
+    totalEl.innerText = "סה\"כ: ₪0";
     return;
   }
 
-  itemsBox.innerHTML = "";
-  cart.forEach((item,index)=>{
-    const row = document.createElement("div");
-    row.className = "cartItem";
-    row.innerHTML = `
-      <div><b>${escapeHtml(item.itemDesc)}</b><br>₪${cleanMoney(item.total)}</div>
-      <button class="removeBtn">מחק</button>
+  el.innerHTML = cart.map((item,idx)=>{
+    const extrasHtml = item.extras.length
+      ? item.extras.map(e => {
+          if(e.type === "combo"){
+            const priceText = e.sum === 0 ? "חינם" : `₪${cleanMoney(e.sum)}`;
+            return `<div>↳ ${e.extraDesc} × ${e.qty} - ${priceText}</div>`;
+          }
+
+          const partsText = e.parts.length > 1 ? `חלקים: ${e.parts.join(", ")}` : "";
+          const priceText = e.sum === 0 ? "חינם" : `₪${cleanMoney(e.sum)}`;
+          return `<div>↳ ${e.extraDesc} ${partsText} - ${priceText}</div>`;
+        }).join("")
+      : "";
+
+    return `
+      <div class="cartLine">
+        <b>${idx+1}. ${item.itemDesc}</b> - ₪${cleanMoney(item.total)}
+        ${extrasHtml}
+        <br><button class="deleteBtn" onclick="removeCartItem(${idx})">מחק מהסל</button>
+      </div>
     `;
-    row.querySelector("button").onclick = () => removeFromCart(index);
-    itemsBox.appendChild(row);
-  });
+  }).join("");
+
+  const total = cart.reduce((s,i)=>s+Number(i.total||0),0);
+  totalEl.innerText = `סה"כ: ₪${cleanMoney(total)}`;
+}
+
+function getCartTotal(){
+  return cart.reduce((s,i)=>s+Number(i.total||0),0);
 }
 
 function openCheckout(){
@@ -219,33 +636,40 @@ function openCheckout(){
     return;
   }
 
-  document.getElementById("pageTitle").textContent = "פרטי הזמנה";
-  document.getElementById("content").className = "";
-  document.getElementById("content").innerHTML = `
+  paymentMethod = "";
+  document.getElementById("title").innerText = "מעבר לתשלום";
+  const c = document.getElementById("items");
+  c.className = "";
+  c.innerHTML = `
     <div class="panel">
+      <h2>איך תרצה לקבל את ההזמנה?</h2>
+
+      <button class="optionBtn" onclick="selectCheckoutType('pickup')">איסוף עצמי</button>
+      <button class="optionBtn" onclick="selectCheckoutType('delivery')">משלוח</button>
+
+      <div id="checkoutForm"></div>
+    </div>
+  `;
+}
+
+function selectCheckoutType(type){
+  checkoutType = type;
+  paymentMethod = "";
+
+  const box = document.getElementById("checkoutForm");
+
+  if(type === "pickup"){
+    box.innerHTML = `
+      <h3>פרטי לקוח לאיסוף עצמי</h3>
+
       <div class="formRow">
         <label>שם</label>
         <input id="clientName" type="text">
       </div>
 
       <div class="formRow">
-        <label>טלפון</label>
+        <label>מספר טלפון</label>
         <input id="phone" type="tel">
-      </div>
-
-      <div class="formRow">
-        <label>איסוף / משלוח</label>
-        <select id="orderType" onchange="toggleAddress()">
-          <option value="pickup">איסוף עצמי</option>
-          <option value="delivery">משלוח</option>
-        </select>
-      </div>
-
-      <div id="addressBox" class="hidden">
-        <div class="formRow">
-          <label>כתובת למשלוח</label>
-          <input id="address" type="text">
-        </div>
       </div>
 
       <div class="formRow">
@@ -253,105 +677,180 @@ function openCheckout(){
         <textarea id="remark"></textarea>
       </div>
 
-      <h2>אמצעי תשלום</h2>
-      <div class="payOptions">
-        <button class="payOption" onclick="choosePayment('cash_counter', this)">מזומן בדלפק</button>
-        <button class="payOption" onclick="choosePayment('cash_delivery', this)">מזומן לשליח</button>
-        <button class="payOption" onclick="choosePayment('credit', this)">אשראי</button>
+      <h3>אמצעי תשלום</h3>
+      <button class="optionBtn" onclick="selectPayment('cash_counter', this)">מזומן בדלפק</button>
+      <button class="optionBtn" onclick="selectPayment('credit', this)">אשראי</button>
+
+      <button class="confirmBtn" onclick="submitOrder()">אישור ההזמנה</button>
+    `;
+  }
+
+  if(type === "delivery"){
+    box.innerHTML = `
+      <h3>פרטי לקוח למשלוח</h3>
+
+      <div class="formRow">
+        <label>שם</label>
+        <input id="clientName" type="text">
       </div>
 
-      <button class="checkoutBtn" style="width:100%;margin-top:20px" onclick="submitOrder()">אישור הזמנה</button>
-    </div>
-  `;
+      <div class="formRow">
+        <label>מספר טלפון</label>
+        <input id="phone" type="tel">
+      </div>
+
+      <div class="formRow">
+        <label>עיר</label>
+        <input id="city" type="text">
+      </div>
+
+      <div class="formRow">
+        <label>רחוב</label>
+        <input id="street" type="text">
+      </div>
+
+      <div class="formRow">
+        <label>מספר בית</label>
+        <input id="houseNumber" type="text">
+      </div>
+
+      <div class="formRow">
+        <label>מספר דירה</label>
+        <input id="apartment" type="text">
+      </div>
+
+      <div class="formRow">
+        <label>הערה להזמנה</label>
+        <textarea id="remark"></textarea>
+      </div>
+
+      <h3>אמצעי תשלום</h3>
+      <button class="optionBtn" onclick="selectPayment('cash_delivery', this)">מזומן לשליח</button>
+      <button class="optionBtn" onclick="selectPayment('credit', this)">אשראי</button>
+
+      <button class="confirmBtn" onclick="submitOrder()">אישור ההזמנה</button>
+    `;
+  }
 }
 
-function toggleAddress(){
-  const type = document.getElementById("orderType").value;
-  document.getElementById("addressBox").classList.toggle("hidden", type !== "delivery");
-}
-
-function choosePayment(method, btn){
-  selectedPayment = method;
-  document.querySelectorAll(".payOption").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
+function selectPayment(method, btn){
+  paymentMethod = method;
+  [...document.querySelectorAll("#checkoutForm .optionBtn")].forEach(b => {
+    if(b.innerText.includes("מזומן") || b.innerText.includes("אשראי")){
+      b.classList.remove("on");
+    }
+  });
+  btn.classList.add("on");
 }
 
 async function submitOrder(){
-  const clientName = document.getElementById("clientName").value.trim();
-  const phone = document.getElementById("phone").value.trim();
-  const orderType = document.getElementById("orderType").value;
-  const address = document.getElementById("address")?.value.trim() || "";
-  const remark = document.getElementById("remark").value.trim();
+  const clientName = document.getElementById("clientName")?.value.trim() || "";
+  const phone = document.getElementById("phone")?.value.trim() || "";
+  const remark = document.getElementById("remark")?.value.trim() || "";
 
-  if(!clientName){alert("נא להזין שם");return}
-  if(!phone){alert("נא להזין טלפון");return}
-  if(orderType === "delivery" && !address){alert("נא להזין כתובת למשלוח");return}
-  if(!selectedPayment){alert("נא לבחור אמצעי תשלום");return}
+  if(!clientName){
+    alert("נא להזין שם");
+    return;
+  }
+
+  if(!phone){
+    alert("נא להזין מספר טלפון");
+    return;
+  }
+
+  if(!paymentMethod){
+    alert("נא לבחור אמצעי תשלום");
+    return;
+  }
+
+  let address = "";
+
+  if(checkoutType === "delivery"){
+    const city = document.getElementById("city")?.value.trim() || "";
+    const street = document.getElementById("street")?.value.trim() || "";
+    const houseNumber = document.getElementById("houseNumber")?.value.trim() || "";
+    const apartment = document.getElementById("apartment")?.value.trim() || "";
+
+    if(!city || !street || !houseNumber){
+      alert("נא למלא עיר, רחוב ומספר בית");
+      return;
+    }
+
+    address = `${city}, ${street} ${houseNumber}${apartment ? ", דירה " + apartment : ""}`;
+  }
 
   const payload = {
     clientName,
     phone,
     address,
-    area: orderType === "delivery" ? "משלוח" : "איסוף עצמי",
+    area: checkoutType === "delivery" ? "משלוח" : "איסוף עצמי",
     remark,
     items: cart,
-    total: getTotal(),
-    paymentMethod: selectedPayment,
-    paymentMethodText: paymentText(selectedPayment),
-    orderStatus: selectedPayment === "credit" ? "pending" : "approved",
+    total: getCartTotal(),
+    paymentMethod,
+    paymentMethodText: getPaymentText(paymentMethod),
+    orderStatus: paymentMethod === "credit" ? "pending" : "approved",
     paymentSource: "new_order_system"
   };
 
   showLoading();
 
   try{
-    const res = await fetch(BASE_URL + "/api/order", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify(payload)
+    const res = await fetch(ORDER_API, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(payload)
     });
 
     const result = await res.json();
 
-    if(!result.ok){
-      throw new Error(result.error || "שגיאה בשליחת ההזמנה");
-    }
-
-    if(selectedPayment === "credit"){
-      if(!result.paymentUrl){
-        throw new Error("לא התקבל קישור תשלום");
-      }
-      window.location.href = result.paymentUrl;
-      return;
-    }
-
     hideLoading();
-    showSuccess(result.orderNo || "");
+
+    if(result.ok){
+      if(paymentMethod === "credit" && result.paymentUrl){
+        window.location.href = result.paymentUrl;
+        return;
+      }
+
+      showOrderSuccess(result.orderNo);
+    }else{
+      alert("שגיאה בשליחת ההזמנה: " + (result.error || ""));
+    }
   }catch(err){
     hideLoading();
-    alert("שגיאה: " + err.message);
+    console.error(err);
+    alert("שגיאה בשליחת ההזמנה: " + err.message);
   }
 }
 
-function showSuccess(orderNo){
-  cart = [];
-  renderCart();
-  document.getElementById("pageTitle").textContent = "ההזמנה נשלחה";
-  document.getElementById("content").className = "";
-  document.getElementById("content").innerHTML = `
-    <div class="panel">
-      <h2>ההזמנה התקבלה בהצלחה ✅</h2>
-      <h3>מספר הזמנה: ${escapeHtml(orderNo)}</h3>
-      <button class="checkoutBtn" onclick="location.reload()">חזרה לתפריט</button>
-    </div>
-  `;
-}
-
-function paymentText(method){
+function getPaymentText(method){
   if(method === "cash_counter") return "מזומן בדלפק";
   if(method === "cash_delivery") return "מזומן לשליח";
   if(method === "credit") return "אשראי";
   return "";
+}
+
+function showOrderSuccess(orderNo){
+  document.getElementById("title").innerText = "ההזמנה נשלחה";
+  document.getElementById("items").className = "";
+  document.getElementById("items").innerHTML = `
+    <div class="panel">
+      <h2>ההזמנה נשלחה בהצלחה</h2>
+      <h3>מספר הזמנה: ${orderNo}</h3>
+      <button class="confirmBtn" onclick="resetAfterOrder()">אישור</button>
+    </div>
+  `;
+}
+
+function resetAfterOrder(){
+  cart = [];
+  renderCart();
+  currentCategory = null;
+  parentId = -1;
+  stack = [];
+  document.getElementById("title").innerText = "בחר קטגוריה";
+  document.getElementById("items").className = "grid";
+  document.getElementById("items").innerHTML = "";
 }
 
 function cleanMoney(n){
@@ -359,17 +858,21 @@ function cleanMoney(n){
   return n.toFixed(2).replace(".00","");
 }
 
-function escapeHtml(str){
-  return String(str || "")
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+function goBack(){
+  if(stack.length === 0){
+    parentId = -1;
+    document.getElementById("title").innerText = "בחר קטגוריה";
+    document.getElementById("items").className = "grid";
+    document.getElementById("items").innerHTML = "";
+    return;
+  }
+
+  const last = stack.pop();
+  parentId = last.parentId;
+  openLevel(last.title);
 }
 
-loadMenu();
+start();
 </script>
-
 </body>
 </html>
