@@ -1481,7 +1481,6 @@ function renderCart(){
       <div class="cartLine">
         <b>משלוח: ${escapeHtml(selectedDeliveryArea["שם"] || "")}</b><br>
         עלות משלוח: ${deliveryPrice > 0 ? "₪" + cleanMoney(deliveryPrice) : "חינם"}
-        ${freeAbove && deliveryPrice > 0 ? `<br>משלוח חינם מעל ₪${cleanMoney(freeAbove)}` : ""}
         ${minOrder && itemsTotal < minOrder ? `<br>מינימום הזמנה ₪${cleanMoney(minOrder)}` : ""}
         ${eta ? `<br>צפי משלוח: ${escapeHtml(eta)} דקות` : ""}
         ${freeShipButton}
