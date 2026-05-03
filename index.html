@@ -406,6 +406,7 @@ function renderDeliveryCategories(){
   currentScreen = "delivery_categories";
   hideCartAreas();
   hideCategoryMenu();
+  hideCategoryMenu();
 
   const categories = getDeliveryCategories();
 
@@ -430,6 +431,7 @@ function selectDeliveryCategory(category){
 function renderDeliveryAreas(){
   currentScreen = "delivery_areas";
   hideCartAreas();
+  hideCategoryMenu();
   hideCategoryMenu();
 
   const areas = (data.deliveryAreas || []).filter(a =>
@@ -479,6 +481,7 @@ function renderDeliveryAreaInfo(){
   currentScreen = "delivery_info";
   hideCartAreas();
   hideCategoryMenu();
+  hideCategoryMenu();
 
   const a = selectedDeliveryArea || {};
   const name = String(a["שם"] || "").trim();
@@ -517,6 +520,7 @@ function confirmDeliveryAreaInfo(){
 function renderDeliveryFullAddress(){
   currentScreen = "delivery_address";
   hideCartAreas();
+  hideCategoryMenu();
   hideCategoryMenu();
 
   document.getElementById("title").innerText = "כתובת מלאה";
@@ -706,8 +710,16 @@ function buildRecommendationsHtml(){
 function addRecommendedProduct(itemNo){
   const item = (data.items || []).find(i => String(i.ItemNo) === String(itemNo));
   if(!item) return;
+
+  const wasUpsell = currentScreen === "checkout_upsell";
   addItemToCart(item, []);
-  showMessage(`${item.ItemDesc} נוסף לסל`);
+
+  if(wasUpsell){
+    showMessage(`${item.ItemDesc} נוסף לסל`);
+    openCheckout();
+  }else{
+    showMessage(`${item.ItemDesc} נוסף לסל`);
+  }
 }
 
 
@@ -833,6 +845,7 @@ function openProduct(item, title){
 
 function openExtrasStep(item, title){
   currentScreen = "extras";
+  hideCategoryMenu();
   currentItem = item;
   tempExtras = [];
   tempCombos = [];
@@ -856,6 +869,7 @@ function openExtrasStep(item, title){
     <div id="extras"></div>
 
     <button class="addBtn" onclick="confirmExtrasStep()">אישור תוספות והמשך</button>
+    <button class="optionBtn" onclick="cancelProductBuild()">ביטול מוצר</button>
   `;
 
   c.appendChild(wrap);
@@ -877,6 +891,7 @@ function confirmExtrasStep(){
 
 function openCombosStep(){
   currentScreen = "combos";
+  hideCategoryMenu();
   document.getElementById("title").innerText = currentItem.ItemDesc + " - שילובים";
 
   const c = document.getElementById("items");
@@ -890,6 +905,7 @@ function openCombosStep(){
     <h3>שילובים / המשך בחירה</h3>
     <div id="combos"></div>
     <button class="addBtn" onclick="confirmCombosAndAdd()">הוסף לסל</button>
+    <button class="optionBtn" onclick="cancelProductBuild()">ביטול מוצר</button>
   `;
 
   c.appendChild(wrap);
@@ -901,6 +917,13 @@ function openCombosStep(){
 function confirmCombosAndAdd(){
   tempCombos = collectSelectedRows();
   addItemToCart(currentItem, [...tempExtras, ...tempCombos]);
+  goBack();
+}
+
+function cancelProductBuild(){
+  currentItem = null;
+  tempExtras = [];
+  tempCombos = [];
   goBack();
 }
 
@@ -1226,7 +1249,9 @@ function collectSelectedRows(){
 }
 
 function addItemToCart(item, extras){
-  currentScreen = "menu";
+  const previousScreen = currentScreen;
+  currentScreen = previousScreen === "checkout_upsell" ? "checkout_upsell" : "menu";
+  if(currentScreen === "menu") showCategoryMenu();
   const extrasTotal = extras.reduce((s,e)=>s+Number(e.sum||0),0);
   const base = Number(item.ItemPrice || 0);
 
@@ -1317,7 +1342,6 @@ function renderCart(){
       </div>
     `;
 
-    el.innerHTML += buildRecommendationsHtml();
   }
 
   const totalText = `סה"כ: ₪${cleanMoney(getCartTotal())}`;
@@ -1350,14 +1374,106 @@ function openCheckout(){
 
   if(orderMode === "delivery"){
     const minOrder = getDeliveryMinOrder();
+    const freeAbove = getDeliveryFreeAbove();
     const itemsTotal = getCartItemsTotal();
+
     if(minOrder > 0 && itemsTotal < minOrder){
-      showMessage(`מינימום הזמנה לאזור זה הוא ₪${cleanMoney(minOrder)}`);
+      renderCheckoutUpsell("min");
+      return;
+    }
+
+    if(freeAbove > 0 && itemsTotal < freeAbove && getDeliveryFinalPrice() > 0){
+      renderCheckoutUpsell("freePaid");
       return;
     }
   }
 
+  continueToCheckoutDetails();
+}
+
+function renderCheckoutUpsell(mode){
+  currentScreen = "checkout_upsell";
+  hideCategoryMenu();
+  hideCartAreas();
+
+  const itemsTotal = getCartItemsTotal();
+  const minOrder = getDeliveryMinOrder();
+  const freeAbove = getDeliveryFreeAbove();
+  const deliveryPrice = getDeliveryBasePrice();
+
+  let title = "השלמת הזמנה";
+  let infoHtml = "";
+  let target = 0;
+
+  if(mode === "min"){
+    target = minOrder;
+    infoHtml = `
+      <h2>חסר לך ₪${cleanMoney(minOrder - itemsTotal)} כדי להגיע למינימום הזמנה</h2>
+      <div class="infoBox">
+        מינימום הזמנה לאזור זה הוא ₪${cleanMoney(minOrder)}.<br>
+        כרגע סכום המוצרים הוא ₪${cleanMoney(itemsTotal)}.<br>
+        אפשר להוסיף מוצר קטן כדי לסגור את ההזמנה.
+      </div>
+    `;
+  }else{
+    target = freeAbove;
+    infoHtml = `
+      <h2>רוצים משלוח חינם?</h2>
+      <div class="infoBox">
+        עלות המשלוח היא ₪${cleanMoney(deliveryPrice)}.<br>
+        למשלוח חינם צריך להגיע ל־₪${cleanMoney(freeAbove)} להזמנה.<br>
+        כרגע חסרים עוד ₪${cleanMoney(freeAbove - itemsTotal)} לקבל את המשלוח בחינם.
+      </div>
+    `;
+  }
+
+  document.getElementById("title").innerText = title;
+  document.getElementById("items").className = "";
+  document.getElementById("items").innerHTML = `
+    <div class="panel">
+      ${infoHtml}
+      ${buildRecommendationsForTargetHtml(target)}
+      ${mode === "freePaid" ? `<button class="confirmBtn" onclick="continueToCheckoutDetails()">אני רוצה משלוח בתשלום</button>` : ""}
+      <button class="optionBtn" onclick="returnToMenuFromCheckout()">חזרה לתפריט</button>
+    </div>
+  `;
+}
+
+function buildRecommendationsForTargetHtml(target){
+  const itemsTotal = getCartItemsTotal();
+  const needed = Math.max(1, target - itemsTotal);
+  const products = getSimpleRecommendedProducts(needed);
+
+  if(!products.length){
+    return `
+      <div class="recommendBox">
+        <div class="recommendTitle">אפשר להוסיף מוצר קטן נוסף מהתפריט כדי לסגור את ההזמנה.</div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="recommendBox">
+      <div class="recommendTitle">מוצרים שיכולים לעזור לסגור את ההזמנה:</div>
+      <div class="recommendItems">
+        ${products.map(item => `<button class="recommendBtn" onclick="addRecommendedProduct('${escapeJs(item.ItemNo)}')">${escapeHtml(item.ItemDesc)} - ₪${cleanMoney(item.ItemPrice)}</button>`).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function returnToMenuFromCheckout(){
+  currentScreen = "menu";
+  showCategoryMenu();
+  showCartAreas();
+  document.getElementById("title").innerText = "בחר קטגוריה";
+  document.getElementById("items").className = "grid";
+  document.getElementById("items").innerHTML = "";
+}
+
+function continueToCheckoutDetails(){
   currentScreen = "checkout_details";
+  hideCategoryMenu();
   hideCartAreas();
   checkoutType = orderMode;
   paymentMethod = "";
@@ -1414,6 +1530,7 @@ function openPaymentStep(){
   };
 
   currentScreen = "checkout_payment";
+  hideCategoryMenu();
   document.getElementById("title").innerText = "אמצעי תשלום";
   document.getElementById("items").innerHTML = `
     <div class="panel">
@@ -1629,6 +1746,11 @@ function goBack(){
 
   if(currentScreen === "delivery_address"){
     renderDeliveryAreaInfo();
+    return;
+  }
+
+  if(currentScreen === "checkout_upsell"){
+    returnToMenuFromCheckout();
     return;
   }
 
