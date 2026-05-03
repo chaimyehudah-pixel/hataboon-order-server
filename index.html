@@ -88,6 +88,11 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 .deliveryRow{width:100%;box-sizing:border-box;background:white;border:1px solid #ccc;border-radius:8px;padding:13px 16px;cursor:pointer;font-size:20px;font-weight:bold;text-align:right;display:flex;justify-content:space-between;align-items:center}
 .deliveryRow:hover{background:#f3f3f3}
 .deliveryRow:after{content:"›";font-size:26px;color:#777;transform:rotate(180deg)}
+
+.deliverySearch{width:100%;box-sizing:border-box;padding:14px 16px;font-size:20px;border:2px solid #cfcfcf;border-radius:10px;margin:8px 0 14px 0;background:white}
+.deliverySearch:focus{outline:3px solid #c9ddf2;border-color:#7aa7d9}
+.noDeliveryResults{background:#fff3f3;border:1px solid #e0b2b2;border-radius:10px;padding:16px;margin-top:12px;line-height:1.8;font-size:18px}
+.callBtn{display:inline-block;background:#159947;color:white;text-decoration:none;border-radius:999px;padding:10px 18px;margin-top:8px;font-weight:bold}
 .deliveryList::-webkit-scrollbar,.side::-webkit-scrollbar,.main::-webkit-scrollbar{width:18px;height:18px}
 .deliveryList::-webkit-scrollbar-track,.side::-webkit-scrollbar-track,.main::-webkit-scrollbar-track{background:#e6e6e6;border-radius:999px}
 .deliveryList::-webkit-scrollbar-thumb,.side::-webkit-scrollbar-thumb,.main::-webkit-scrollbar-thumb{background:#777;border-radius:999px;border:4px solid #e6e6e6}
@@ -443,22 +448,73 @@ function renderDeliveryAreas(){
   currentScreen = "delivery_areas";
   hideCartAreas();
   hideCategoryMenu();
-  hideCategoryMenu();
-
-  const areas = (data.deliveryAreas || []).filter(a =>
-    String(a["ברגע ש"] || "").trim() === String(selectedDeliveryCategory).trim()
-  );
 
   document.getElementById("title").innerText = selectedDeliveryCategory;
   document.getElementById("items").className = "";
   document.getElementById("items").innerHTML = `
     <div class="panel">
       <h2>בחר מקום</h2>
-      <div class="deliveryList">
-        ${areas.map(area => `<div class="deliveryRow" onclick="selectDeliveryArea('${escapeJs(String(area.ID))}')">${escapeHtml(area["שם"] || "")}</div>`).join("")}
-      </div>
+      <input id="deliveryAreaSearch" class="deliverySearch" type="text" placeholder="חפש מקום / פלבוקס / צומת / יישוב" oninput="renderFilteredDeliveryAreas()">
+      <div id="deliveryAreaResults" class="deliveryList"></div>
+      <div id="deliveryAreaNoResults" class="noDeliveryResults hidden"></div>
       <button class="confirmBtn" onclick="renderDeliveryCategories()">חזרה לקטגוריות</button>
     </div>
+  `;
+
+  renderFilteredDeliveryAreas();
+  setTimeout(() => document.getElementById("deliveryAreaSearch")?.focus(), 50);
+}
+
+function getDeliveryAreasForSelectedCategory(){
+  return (data.deliveryAreas || []).filter(a =>
+    String(a["ברגע ש"] || "").trim() === String(selectedDeliveryCategory).trim()
+  );
+}
+
+function deliveryAreaMatchesSearch(area, query){
+  const q = String(query || "").trim().toLowerCase();
+  if(!q) return true;
+
+  const fields = [
+    area.ID,
+    area["שם"],
+    area["סוג"],
+    area["ברגע ש"],
+    area["אזור חלוקה"],
+    area["מרחק בקילומטרים"]
+  ];
+
+  return fields.some(v => String(v || "").toLowerCase().includes(q));
+}
+
+function renderFilteredDeliveryAreas(){
+  const input = document.getElementById("deliveryAreaSearch");
+  const resultsBox = document.getElementById("deliveryAreaResults");
+  const noResultsBox = document.getElementById("deliveryAreaNoResults");
+  if(!resultsBox || !noResultsBox) return;
+
+  const query = input?.value || "";
+  const areas = getDeliveryAreasForSelectedCategory().filter(area => deliveryAreaMatchesSearch(area, query));
+
+  if(areas.length){
+    resultsBox.classList.remove("hidden");
+    noResultsBox.classList.add("hidden");
+    resultsBox.innerHTML = areas.map(area => `
+      <div class="deliveryRow" onclick="selectDeliveryArea('${escapeJs(String(area.ID))}')">
+        ${escapeHtml(area["שם"] || "")}
+      </div>
+    `).join("");
+    return;
+  }
+
+  resultsBox.innerHTML = "";
+  resultsBox.classList.add("hidden");
+  noResultsBox.classList.remove("hidden");
+  noResultsBox.innerHTML = `
+    <b>לא מצאנו אזור משלוח מתאים.</b><br>
+    מומלץ להתקשר אלינו ישירות ולברר אם ניתן לבצע משלוח לשם:<br>
+    <b>02-960-5556</b><br>
+    <a class="callBtn" href="tel:029605556">חייגו אלינו</a>
   `;
 }
 
