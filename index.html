@@ -79,7 +79,8 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 .recommendBtn{background:white;border:1px solid #d8b25a;border-radius:999px;padding:8px 12px;font-size:16px;cursor:pointer}
 .recommendBtn:hover{background:#fff1c7}
 .freeShipHint{background:#eaf8ef;border:1px solid #b7e0c3;color:#116b2d;border-radius:8px;padding:10px;margin:10px 0;font-weight:bold}
-.topHint{background:#eaf8ef;border:1px solid #b7e0c3;color:#116b2d;border-radius:999px;padding:7px 14px;font-size:16px;font-weight:bold}
+.topHint{background:#fff8e8;border:1px solid #e5c77b;color:#5b3b00;border-radius:999px;padding:7px 14px;font-size:16px;font-weight:bold}
+.topFreeBtn{background:#9b4d36!important;color:white!important;border:0!important;border-radius:999px!important;padding:8px 14px!important;font-size:16px!important;cursor:pointer!important}
 .savedDeliveryBox{background:#f7fbff;border:1px solid #c9ddf2;border-radius:10px;padding:12px;margin:12px 0;line-height:1.7}
 .savedDeliveryTitle{font-weight:bold;font-size:18px;margin-bottom:6px}
 .hidden{display:none!important}
@@ -130,6 +131,7 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 <div class="topCart" id="topCart">
   <span id="topCartDelivery" class="deliveryBadge hidden"></span>
   <span id="topCartHint" class="topHint hidden"></span>
+  <button id="topFreeBtn" class="topFreeBtn hidden" onclick="showFreeDeliveryInfo()">רוצים משלוח חינם?</button>
   <span id="topCartTotal">סה"כ: ₪0</span>
   <button onclick="openCheckout()">מעבר לתשלום</button>
 </div>
@@ -184,6 +186,8 @@ function closeMessage(){
 }
 function showCartAreas(){document.getElementById("cartBox").classList.remove("hidden");document.getElementById("topCart").classList.remove("hidden");updateTopDeliveryBadge();}
 function hideCartAreas(){document.getElementById("cartBox").classList.add("hidden");document.getElementById("topCart").classList.add("hidden");}
+function showCategoryMenu(){document.getElementById("cats").classList.remove("hidden");}
+function hideCategoryMenu(){document.getElementById("cats").classList.add("hidden");}
 function updateTopDeliveryBadge(){
   const badge = document.getElementById("topCartDelivery");
   const hint = document.getElementById("topCartHint");
@@ -203,22 +207,54 @@ function updateTopDeliveryBadge(){
     }
   }
 
+  const freeBtn = document.getElementById("topFreeBtn");
+
   if(hint){
-    const freeAbove = getDeliveryFreeAbove();
-    const itemsTotal = getCartItemsTotal();
-    if(orderMode === "delivery" && selectedDeliveryArea && cart.length > 0 && freeAbove > 0 && itemsTotal < freeAbove){
-      hint.innerText = `נשאר ₪${cleanMoney(freeAbove - itemsTotal)} למשלוח חינם`;
+    if(orderMode === "delivery" && selectedDeliveryArea){
+      const deliveryPrice = getDeliveryFinalPrice();
+      hint.innerText = `עלות משלוח: ${deliveryPrice > 0 ? "₪" + cleanMoney(deliveryPrice) : "חינם"}`;
       hint.classList.remove("hidden");
     }else{
       hint.innerText = "";
       hint.classList.add("hidden");
     }
   }
+
+  if(freeBtn){
+    const freeAbove = getDeliveryFreeAbove();
+    const itemsTotal = getCartItemsTotal();
+    if(orderMode === "delivery" && selectedDeliveryArea && freeAbove > 0 && itemsTotal < freeAbove){
+      freeBtn.classList.remove("hidden");
+    }else{
+      freeBtn.classList.add("hidden");
+    }
+  }
+}
+
+function showFreeDeliveryInfo(){
+  if(orderMode !== "delivery" || !selectedDeliveryArea) return;
+
+  const deliveryPrice = getDeliveryBasePrice();
+  const freeAbove = getDeliveryFreeAbove();
+  const itemsTotal = getCartItemsTotal();
+
+  if(!freeAbove){
+    showMessage(`עלות המשלוח היא ₪${cleanMoney(deliveryPrice)}`);
+    return;
+  }
+
+  const missing = Math.max(0, freeAbove - itemsTotal);
+  const text = missing > 0
+    ? `עלות המשלוח היא ₪${cleanMoney(deliveryPrice)}\nלמשלוח חינם צריך להגיע ל־₪${cleanMoney(freeAbove)} להזמנה\nכרגע חסרים עוד ₪${cleanMoney(missing)} לקבל את המשלוח בחינם`
+    : `עלות המשלוח היא ₪${cleanMoney(deliveryPrice)}\nהגעת לסכום המזכה במשלוח חינם`;
+
+  showMessage(text);
 }
 
 async function start(){
   currentScreen = "start";
   hideCartAreas();
+  hideCategoryMenu();
   showLoading();
 
   try{
@@ -308,6 +344,7 @@ function restoreLastDeliveryArea(){
 function renderStartChoice(){
   currentScreen = "start";
   hideCartAreas();
+  hideCategoryMenu();
 
   const savedDelivery = getSavedDeliveryArea();
   const savedHtml = savedDelivery ? `
@@ -339,6 +376,7 @@ function chooseOrderMode(mode){
   deliveryAddressDetails = {};
 
   if(mode === "pickup"){
+    showCategoryMenu();
     showCartAreas();
     document.getElementById("title").innerText = "בחר קטגוריה";
     document.getElementById("items").className = "grid";
@@ -367,6 +405,7 @@ function getDeliveryCategories(){
 function renderDeliveryCategories(){
   currentScreen = "delivery_categories";
   hideCartAreas();
+  hideCategoryMenu();
 
   const categories = getDeliveryCategories();
 
@@ -391,6 +430,7 @@ function selectDeliveryCategory(category){
 function renderDeliveryAreas(){
   currentScreen = "delivery_areas";
   hideCartAreas();
+  hideCategoryMenu();
 
   const areas = (data.deliveryAreas || []).filter(a =>
     String(a["ברגע ש"] || "").trim() === String(selectedDeliveryCategory).trim()
@@ -438,6 +478,7 @@ function selectDeliveryArea(id){
 function renderDeliveryAreaInfo(){
   currentScreen = "delivery_info";
   hideCartAreas();
+  hideCategoryMenu();
 
   const a = selectedDeliveryArea || {};
   const name = String(a["שם"] || "").trim();
@@ -476,6 +517,7 @@ function confirmDeliveryAreaInfo(){
 function renderDeliveryFullAddress(){
   currentScreen = "delivery_address";
   hideCartAreas();
+  hideCategoryMenu();
 
   document.getElementById("title").innerText = "כתובת מלאה";
   document.getElementById("items").className = "";
@@ -513,6 +555,7 @@ function saveDeliveryFullAddress(){
 function enterMenuAfterDelivery(){
   currentScreen = "menu";
   saveDeliverySelection();
+  showCategoryMenu();
   showCartAreas();
   document.getElementById("title").innerText = "בחר קטגוריה";
   document.getElementById("items").className = "grid";
@@ -632,7 +675,7 @@ function buildRecommendationsHtml(){
     reason = `חסר לך ₪${cleanMoney(minOrder - itemsTotal)} כדי להגיע למינימום הזמנה`;
   }else if(freeAbove > 0 && itemsTotal < freeAbove){
     target = freeAbove;
-    reason = `נשאר לך ₪${cleanMoney(freeAbove - itemsTotal)} למשלוח חינם`;
+    reason = `אפשר לקבל משלוח חינם בהזמנה מעל ₪${cleanMoney(freeAbove)}. חסרים עוד ₪${cleanMoney(freeAbove - itemsTotal)}`;
   }
 
   if(!target) return "";
@@ -701,7 +744,15 @@ function renderCategories(){
 }
 
 function openCategory(id, name){
+  if(orderMode === "delivery" && !selectedDeliveryArea){
+    hideCategoryMenu();
+    showMessage("נא לבחור מיקום משלוח לפני פתיחת התפריט");
+    renderDeliveryCategories();
+    return;
+  }
+
   currentScreen = "menu";
+  showCategoryMenu();
   showCartAreas();
   showLoading();
 
@@ -1251,8 +1302,8 @@ function renderCart(){
   if(orderMode === "delivery" && selectedDeliveryArea){
     const eta = String(selectedDeliveryArea["צפי למשלוח בדקות"] || "").trim();
     const itemsTotal = getCartItemsTotal();
-    const freeShipHint = freeAbove && itemsTotal < freeAbove
-      ? `<div class="freeShipHint">נשאר לך ₪${cleanMoney(freeAbove - itemsTotal)} למשלוח חינם</div>`
+    const freeShipButton = freeAbove && itemsTotal < freeAbove
+      ? `<br><button class="recommendBtn" onclick="showFreeDeliveryInfo()">רוצים משלוח חינם?</button>`
       : "";
 
     el.innerHTML += `
@@ -1262,7 +1313,7 @@ function renderCart(){
         ${freeAbove ? `<br>משלוח חינם מעל ₪${cleanMoney(freeAbove)}` : ""}
         ${minOrder ? `<br>מינימום הזמנה ₪${cleanMoney(minOrder)}` : ""}
         ${eta ? `<br>צפי משלוח: ${escapeHtml(eta)} דקות` : ""}
-        ${freeShipHint}
+        ${freeShipButton}
       </div>
     `;
 
@@ -1583,6 +1634,7 @@ function goBack(){
 
   if(currentScreen === "checkout_details" || currentScreen === "checkout_payment"){
     currentScreen = "menu";
+    showCategoryMenu();
     showCartAreas();
     document.getElementById("title").innerText = "בחר קטגוריה";
     document.getElementById("items").className = "grid";
@@ -1591,6 +1643,7 @@ function goBack(){
   }
 
   currentScreen = "menu";
+  showCategoryMenu();
   showCartAreas();
 
   if(stack.length === 0){
