@@ -646,7 +646,7 @@ function renderDeliveryAreaInfo(){
         <div><b>צפי למשלוח:</b> ${eta ? escapeHtml(eta) + " דקות" : "לא צוין"}</div>
       </div>
       <button class="confirmBtn" onclick="confirmDeliveryAreaInfo()">אישור והמשך</button>
-      <button class="optionBtn" onclick="renderDeliveryAreas()">חזרה</button>
+      <button class="optionBtn" onclick="renderDeliveryCategories()">חזרה</button>
     </div>
   `;
 }
@@ -1886,7 +1886,8 @@ function goBack(){
   }
 
   if(currentScreen === "delivery_info" || currentScreen === "delivery_blocked"){
-    renderDeliveryAreas();
+    selectedDeliveryArea = null;
+    renderDeliveryCategories();
     return;
   }
 
