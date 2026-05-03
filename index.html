@@ -62,8 +62,8 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 .cartLine{border-bottom:1px solid #ddd;padding:8px}
 .deleteBtn{background:#d71920;color:white;border:0;border-radius:5px;padding:5px 10px;cursor:pointer;margin-top:6px}
 
-.loading{position:fixed;inset:0;background:rgba(255,255,255,.75);display:none;align-items:center;justify-content:center;z-index:9999;font-size:22px;font-weight:bold}
-.spinner{width:45px;height:45px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin 1s linear infinite;margin-left:12px}
+.loading{position:fixed;inset:0;background:rgba(255,255,255,.75);display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center;gap:14px;z-index:9999;font-size:22px;font-weight:bold}
+.spinner{width:45px;height:45px;border:5px solid #ddd;border-top-color:#111;border-radius:50%;animation:spin 1s linear infinite;margin-left:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 .msgOverlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000;padding:18px}
@@ -97,7 +97,9 @@ header{background:#111;color:white;text-align:center;padding:14px;font-size:20px
 @media (max-width:700px){
   body{font-size:18px}
   header{font-size:24px;padding:18px}
-  .topCart{font-size:18px;flex-direction:column}
+  .topCart{font-size:18px;flex-direction:row;padding:8px;gap:0}
+  .topCart span,.topCart #topFreeBtn{display:none!important}
+  .topCart button{width:100%;font-size:22px;padding:16px 20px}
   .layout{flex-direction:column;height:auto}
   .side{width:auto;display:flex;overflow-x:auto;gap:10px;padding:10px}
   .side button{width:auto;min-width:150px;font-size:18px;padding:16px;margin-bottom:0}
@@ -537,10 +539,10 @@ function renderDeliveryFullAddress(){
   document.getElementById("items").innerHTML = `
     <div class="panel">
       <h2>הכנס כתובת למשלוח</h2>
-      <div class="formRow"><label>רחוב</label><input id="deliveryStreet" type="text"></div>
-      <div class="formRow"><label>מספר בית</label><input id="deliveryHouseNumber" type="text"></div>
-      <div class="formRow"><label>מספר דירה</label><input id="deliveryApartment" type="text"></div>
-      <div class="formRow"><label>קומה</label><input id="deliveryFloor" type="text"></div>
+      <div class="formRow"><label>רחוב</label><input id="deliveryStreet" type="text" required></div>
+      <div class="formRow"><label>מספר בית</label><input id="deliveryHouseNumber" type="text" required></div>
+      <div class="formRow"><label>מספר דירה</label><input id="deliveryApartment" type="text" required></div>
+      <div class="formRow"><label>קומה</label><input id="deliveryFloor" type="text" required></div>
       <button class="confirmBtn" onclick="saveDeliveryFullAddress()">אישור והמשך לתפריט</button>
     </div>
   `;
@@ -549,17 +551,19 @@ function renderDeliveryFullAddress(){
 function saveDeliveryFullAddress(){
   const street = document.getElementById("deliveryStreet")?.value.trim() || "";
   const houseNumber = document.getElementById("deliveryHouseNumber")?.value.trim() || "";
+  const apartment = document.getElementById("deliveryApartment")?.value.trim() || "";
+  const floor = document.getElementById("deliveryFloor")?.value.trim() || "";
 
-  if(!street || !houseNumber){
-    showMessage("נא למלא רחוב ומספר בית");
+  if(!street || !houseNumber || !apartment || !floor){
+    showMessage("נא למלא רחוב, מספר בית, מספר דירה וקומה");
     return;
   }
 
   deliveryAddressDetails = {
     street,
     houseNumber,
-    apartment: document.getElementById("deliveryApartment")?.value.trim() || "",
-    floor: document.getElementById("deliveryFloor")?.value.trim() || ""
+    apartment,
+    floor
   };
 
   enterMenuAfterDelivery();
@@ -1345,7 +1349,7 @@ function renderCart(){
         <b>משלוח: ${escapeHtml(selectedDeliveryArea["שם"] || "")}</b><br>
         עלות משלוח: ${deliveryPrice > 0 ? "₪" + cleanMoney(deliveryPrice) : "חינם"}
         ${freeAbove && deliveryPrice > 0 ? `<br>משלוח חינם מעל ₪${cleanMoney(freeAbove)}` : ""}
-        ${minOrder ? `<br>מינימום הזמנה ₪${cleanMoney(minOrder)}` : ""}
+        ${minOrder && itemsTotal < minOrder ? `<br>מינימום הזמנה ₪${cleanMoney(minOrder)}` : ""}
         ${eta ? `<br>צפי משלוח: ${escapeHtml(eta)} דקות` : ""}
         ${freeShipButton}
       </div>
