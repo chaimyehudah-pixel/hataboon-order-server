@@ -9,6 +9,7 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "20mb" }));
 app.use(express.static(__dirname));
+app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 const PORT = process.env.PORT || 3000;
 
